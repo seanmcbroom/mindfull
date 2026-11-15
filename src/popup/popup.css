@@ -1,0 +1,23 @@
+body {
+  width: 300px;
+  padding: 8px 10px 12px;
+  font-size: 14px;
+}
+
+.g-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.g-name { color: var(--title); font-size: 16px; font-weight: normal; }
+.g-status { margin-top: 2px; }
+.g-status.focus { color: var(--name); font-weight: bold; }
+.g-status.off { color: var(--danger); font-weight: bold; }
+
+.g-main { display: flex; flex-direction: column; gap: 10px; }
+.g-section { display: flex; flex-direction: column; gap: 4px; }
+.g-h { font-size: 14px; font-weight: bold; }
+.g-h::before { content: "■ "; }
+.g-row { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+.g-row .grow { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.g-row em { font-style: normal; color: var(--muted); }
+.g-big { font-size: 20px; font-weight: bold; font-variant-numeric: tabular-nums; }
+.g-note { color: var(--muted); font-size: 13px; }
+
+.modal-backdrop { align-items: start; }

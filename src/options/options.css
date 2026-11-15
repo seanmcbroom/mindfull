@@ -1,0 +1,53 @@
+.page {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 40px 20px 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.page-title { color: var(--title); font-size: 20px; font-weight: normal; }
+.toc { font-size: 14px; }
+
+.sec { display: flex; flex-direction: column; gap: 8px; scroll-margin-top: 10px; }
+.sec h2, .notice h2 { font-size: 17px; }
+.sec h2::before { content: "■ "; }
+.sec h3 { font-size: 15px; }
+
+.notice {
+  padding: 6px 8px;
+  background: var(--paper);
+  border: 1px solid var(--danger);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+p.notice { display: block; }
+
+.rows { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.rows:empty { display: none; }
+.rows li { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.rows .domain { font-weight: bold; overflow-wrap: anywhere; }
+.rows .empty { color: var(--muted); }
+
+.mini { display: inline-flex; align-items: center; gap: 4px; font-size: 14px; }
+
+.schedule-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+}
+
+.form-table { border-collapse: collapse; }
+.form-table th { text-align: left; font-weight: normal; padding: 4px 12px 4px 0; vertical-align: middle; }
+.form-table td { padding: 4px 0; }
+
+#about ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 4px; }
+
+@media (max-width: 560px) {
+  .form-table th, .form-table td { display: block; padding: 2px 0; }
+}

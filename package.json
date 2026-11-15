@@ -1,0 +1,31 @@
+{
+  "name": "mindfull",
+  "version": "0.1.0",
+  "description": "A mindful pause before distracting websites: breathe, decide, and set a time limit.",
+  "private": true,
+  "scripts": {
+    "build": "node scripts/build.js",
+    "build:chrome": "node scripts/build.js --browser=chrome",
+    "build:firefox": "node scripts/build.js --browser=firefox",
+    "build:all": "node scripts/build.js --browser=all",
+    "build:dev": "node scripts/build.js --browser=all --dev",
+    "icons": "node scripts/make-icons.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "zip:chrome": "npm run build:chrome && node scripts/zip.js chrome",
+    "zip:firefox": "npm run build:firefox && node scripts/zip.js firefox",
+    "zip:all": "npm run build:all && node scripts/zip.js all"
+  },
+  "devDependencies": {
+    "adm-zip": "^0.5.16",
+    "esbuild": "^0.28.0",
+    "jest": "^29.7.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {},
+    "testMatch": [
+      "**/tests/**/*.test.js"
+    ]
+  }
+}

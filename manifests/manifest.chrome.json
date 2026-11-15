@@ -1,0 +1,42 @@
+{
+  "manifest_version": 3,
+  "name": "Mindfull — pause before you scroll",
+  "short_name": "Mindfull",
+  "version": "0.1.0",
+  "description": "Asks \"Do you need this right now?\" before distracting sites, with a breathing pause, time limits and friction to turn it off.",
+
+  "permissions": ["declarativeNetRequest", "storage", "alarms", "tabs"],
+  "host_permissions": ["<all_urls>"],
+
+  "background": {
+    "service_worker": "src/background.js"
+  },
+
+  "action": {
+    "default_popup": "src/popup.html",
+    "default_title": "Mindfull",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+
+  "options_ui": {
+    "page": "src/options.html",
+    "open_in_tab": true
+  },
+
+  "web_accessible_resources": [
+    {
+      "resources": ["src/pause.html", "src/pause.js", "src/pause.css", "src/ui.css", "icons/*"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

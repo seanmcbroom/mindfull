@@ -1,0 +1,21 @@
+/* Centre the content in the window, sitting slightly above the middle. */
+body {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+}
+.pause {
+  width: min(520px, 100%);
+  padding: 32px 20px 12vh;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.site { color: var(--muted); font-size: 15px; }
+.title { color: var(--title); font-size: 30px; font-weight: normal; }
+.wait { font-size: 18px; }
+.hint { margin-top: -8px; font-size: 14px; color: var(--muted); }
+.hint:empty { display: none; }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.today { font-size: 14px; color: var(--muted); }

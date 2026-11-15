@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mindfull settings</title>
+  <link rel="icon" href="../icons/icon48.png">
+  <link rel="stylesheet" href="ui.css">
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="page">
+    <h1 class="page-title">Mindfull settings</h1>
+    <p>Stricter changes apply right away. Loosening one means typing a sentence, then waiting out the cooldown.</p>
+    <p class="toc">
+      <a href="#sites">Sites</a> |
+      <a href="#limits">Daily opens</a> |
+      <a href="#hours">Restricted hours</a> |
+      <a href="#friction">Breathing and cooldown</a> |
+      <a href="#protection">Pause or turn off</a> |
+      <a href="#about">Good to know</a>
+    </p>
+
+    <p id="perm-banner" class="notice" hidden>
+      Mindfull needs permission to read website addresses so it can step in before a site loads.
+      <button class="btn" id="grant">Allow access</button>
+    </p>
+
+    <section id="pending-section" class="notice" hidden>
+      <h2>Waiting to apply</h2>
+      <p>These changes loosen your limits. Cancel any you no longer want.</p>
+      <ul id="pending-list" class="rows"></ul>
+    </section>
+
+    <hr>
+
+    <section class="sec" id="sites">
+      <h2>Sites</h2>
+      <p class="muted">Mindfull asks "Do you need this right now?" before any of these open. Subdomains are included.</p>
+      <form id="add-site" class="row">
+        <input id="site-input" class="input" type="text" size="30" placeholder="e.g. youtube.com" autocomplete="off" spellcheck="false" aria-label="Website to add">
+        <button class="btn" type="submit">Add site</button>
+      </form>
+      <div id="suggestions" class="chips" aria-label="Suggested sites"></div>
+      <ul id="site-list" class="rows"></ul>
+    </section>
+
+    <hr>
+
+    <section class="sec" id="limits">
+      <h2>Daily opens</h2>
+      <p class="muted">How many times a day you can choose Stay on each site. After that, the site stays closed until midnight.</p>
+      <label class="row">Default for each site: <select id="default-limit" class="select"></select></label>
+    </section>
+
+    <hr>
+
+    <section class="sec" id="hours">
+      <h2>Restricted hours</h2>
+      <p class="muted">During these hours, sites stay closed and there's no Stay button.</p>
+      <ul id="schedule-list" class="rows"></ul>
+      <p><button id="new-schedule" class="btn" type="button">Add restricted hours</button></p>
+      <form id="schedule-form" class="schedule-form" hidden>
+        <h3 id="schedule-form-title">New restricted hours</h3>
+        <div class="row">Days: <span class="chips" id="day-chips"></span></div>
+        <div class="row">
+          <label>From <input type="time" id="sch-start" class="input" value="09:00" required></label>
+          <label>until <input type="time" id="sch-end" class="input" value="17:00" required></label>
+        </div>
+        <p class="muted small">If "until" is earlier than "from", it runs overnight.</p>
+        <div class="row">
+          Sites:
+          <label><input type="radio" name="sch-sites" value="all" checked> All my sites</label>
+          <label><input type="radio" name="sch-sites" value="some"> Only some</label>
+        </div>
+        <div id="sch-site-chips" class="chips" hidden></div>
+        <div class="row">
+          <button type="submit" class="btn">Save</button>
+          <button type="button" id="sch-cancel" class="btn">Cancel</button>
+        </div>
+      </form>
+    </section>
+
+    <hr>
+
+    <section class="sec" id="friction">
+      <h2>Breathing and cooldown</h2>
+      <p class="muted">The breathing wait doubles with every Stay on a site each day, from the first wait up to the longest.</p>
+      <table class="form-table">
+        <tr><th><label for="base-wait">First wait</label></th><td><select id="base-wait" class="select"></select></td></tr>
+        <tr><th><label for="max-wait">Longest wait</label></th><td><select id="max-wait" class="select"></select></td></tr>
+        <tr><th><label for="cooldown">Cooldown for loosening changes</label></th><td><select id="cooldown" class="select"></select></td></tr>
+        <tr><th>Stay options</th><td><div id="duration-chips" class="chips"></div></td></tr>
+      </table>
+    </section>
+
+    <hr>
+
+    <section class="sec" id="protection">
+      <h2>Pause or turn off</h2>
+      <p id="protection-status"></p>
+      <div id="protection-actions" class="row"></div>
+    </section>
+
+    <hr>
+
+    <section class="sec" id="about">
+      <h2>Good to know</h2>
+      <ul>
+        <li>Mindfull can only add friction to its own settings. It can still be switched off from your browser's extensions page.</li>
+        <li>Private windows: <span id="incognito-status">checking…</span></li>
+        <li>Everything stays in this browser. Nothing is sent anywhere.</li>
+      </ul>
+    </section>
+  </div>
+  <script src="options.js"></script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+/* Mindfull's look: an old textboard. Grey page, red thread title, green poster name,
+   numbered posts, default blue links and the browser's own buttons. Kept deliberately plain. */
+
+:root {
+  color-scheme: light;
+  --bg: #efefef;
+  --fg: #000000;
+  --title: #ff0000;
+  --name: #008000;
+  --link: #0000ff;
+  --vlink: #660099;
+  --muted: #555555;
+  --line: #999999;
+  --danger: #cc0000;
+  --ok: #008000;
+  --paper: #ffffff;
+  --font: "MS PGothic", "ＭＳ Ｐゴシック", "IPAMonaPGothic", "Mona", "Hiragino Kaku Gothic Pro", sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+html, body { margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+h1, h2, h3, p { margin: 0; }
+a { color: var(--link); }
+a:visited { color: var(--vlink); }
+hr { border: none; border-top: 1px solid var(--line); margin: 10px 0; }
+
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+.tabular { font-variant-numeric: tabular-nums; }
+.row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.row.end { justify-content: flex-end; }
+.stack { display: flex; flex-direction: column; gap: 8px; }
+.grow { flex: 1 1 auto; min-width: 0; }
+
+/* Buttons and fields are left as the browser draws them. These classes only tweak text. */
+.btn-danger { color: var(--danger); }
+.btn-lg { font-size: 16px; padding: 5px 18px; min-width: 88px; }
+.input, .select { min-width: 0; font-size: 14px; }
+
+.link-btn {
+  appearance: none; background: none; border: none; padding: 0; margin: 0; cursor: pointer;
+  font: inherit; color: var(--link); text-decoration: underline;
+}
+.link-btn:focus-visible, .chip:focus-visible { outline: 2px solid var(--link); outline-offset: 1px; }
+
+/* Toggle buttons (days, Stay options) show a checkbox mark; plain chips are just buttons. */
+.chips { display: flex; gap: 4px; flex-wrap: wrap; }
+.chip { font-size: 14px; }
+.chip[aria-pressed="false"]::before { content: "☐ "; }
+.chip[aria-pressed="true"]::before { content: "☑ "; }
+.chip[aria-pressed="true"] { font-weight: bold; }
+
+/* States written as text in brackets */
+.pill { white-space: nowrap; font-size: 14px; }
+.pill::before { content: "("; }
+.pill::after { content: ")"; }
+.pill.on { color: var(--ok); }
+.pill.off { color: var(--danger); }
+
+/* Thread and posts */
+.thread-title { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 4px; color: var(--title); }
+.thread-title .site { font-size: 20px; }
+.thread-title h1 { font-size: 20px; font-weight: normal; }
+.post { margin: 0 0 14px; }
+.post dt { font-size: 15px; }
+.post dt .name { color: var(--name); font-weight: bold; }
+.post dt .trip { color: var(--name); }
+.post dd { margin: 6px 0 0 2.2em; display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+.aa { white-space: pre; font-size: 16px; }
+
+/* Confirm box */
+.modal-backdrop {
+  position: fixed; inset: 0; z-index: 100;
+  display: grid; place-items: center; padding: 16px;
+  background: rgba(0, 0, 0, 0.25);
+}
+.modal {
+  width: min(460px, 100%);
+  background: var(--bg);
+  border: 1px solid var(--fg);
+  padding: 12px 14px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.modal h2 { font-size: 17px; color: var(--title); font-weight: normal; }
+.modal .input { width: 100%; }
+.phrase {
+  padding: 6px 8px;
+  background: var(--paper);
+  border: 1px dashed var(--line);
+  font-weight: bold;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Status message */
+.toast {
+  position: fixed; right: 10px; bottom: 10px; z-index: 200;
+  max-width: min(340px, calc(100% - 20px));
+  padding: 4px 8px;
+  background: var(--paper);
+  border: 1px solid var(--fg);
+  font-size: 13px;
+  display: none;
+}
+.toast.show { display: block; }
+.toast[data-kind="error"] { color: var(--danger); }
