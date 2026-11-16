@@ -1,7 +1,7 @@
 // DOM helpers shared by the pause page, popup and options page.
 
 const M = require("./messages");
-const { fmtCountdown, fmtMinutes, nextMidnight } = require("./time");
+const { fmtCountdown, fmtMinutes, nextDayStart } = require("./time");
 const { isLoosening } = require("./ops");
 const { normalizePhrase, randomPhrase } = require("./friction");
 
@@ -36,14 +36,14 @@ function startTicker() {
 }
 
 /**
- * Run cb just after every local midnight. Daily counts and "closed until midnight" change
+ * Run cb just after every day start (04:00). Daily counts and "closed until 04:00" change
  * then without the background writing anything, so open pages wouldn't notice otherwise.
  */
-function onMidnight(cb) {
+function onDayStart(cb) {
   setTimeout(() => {
     cb();
-    onMidnight(cb);
-  }, nextMidnight(Date.now()) - Date.now() + 1000);
+    onDayStart(cb);
+  }, nextDayStart(Date.now()) - Date.now() + 1000);
 }
 
 /** Re-run cb whenever the background writes state. */
@@ -145,4 +145,4 @@ async function submitOp(op, ctx, label) {
   return res || { ok: false };
 }
 
-module.exports = { send, esc, $, startTicker, tickCountdowns, onStateChange, onMidnight, toast, commitModal, submitOp };
+module.exports = { send, esc, $, startTicker, tickCountdowns, onStateChange, onDayStart, toast, commitModal, submitOp };

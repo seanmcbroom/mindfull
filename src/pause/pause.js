@@ -1,5 +1,5 @@
-// The intercept page. Deliberately minimal: a heading, the wait, Leave/Enter, and one line
-// about today. Blocked navigations arrive as pause.html#<original url>, optionally ?r=expired|blocked.
+// The intercept page, laid out like a browser's "can't open this site" page: icon, heading, the wait,
+// one line about today, an error code, Leave/Enter. Blocked navigations arrive as pause.html#<original url>, optionally ?r=expired|blocked.
 
 const M = require("../shared/messages");
 const { send, esc, $, startTicker, tickCountdowns, onStateChange, toast } = require("../shared/ui");
@@ -68,60 +68,77 @@ function todayLine(st) {
   return `Opened ${plural(n, "time")} today, ${fmtUsage(ms)} in total.`;
 }
 
-function page(site, title, body) {
+// The big grey icon: the toolbar icon's pause bars while you can still enter, one bar when closed.
+const GLYPHS = {
+  pause:
+    '<svg class="glyph" viewBox="0 0 64 64" aria-hidden="true"><rect x="4" y="4" width="56" height="56" rx="6" fill="none" stroke="currentColor" stroke-width="4"/><rect x="22" y="19" width="7" height="26" fill="currentColor"/><rect x="35" y="19" width="7" height="26" fill="currentColor"/></svg>',
+  closed:
+    '<svg class="glyph" viewBox="0 0 64 64" aria-hidden="true"><rect x="4" y="4" width="56" height="56" rx="6" fill="none" stroke="currentColor" stroke-width="4"/><rect x="18" y="29" width="28" height="7" fill="currentColor"/></svg>',
+};
+
+/** Error-page layout: icon, heading, grey lines, a small error code, buttons along the bottom. */
+function page({ glyph = "pause", title, lines, code, actions }) {
   return `
-    <p class="site">${esc(site)}</p>
+    ${GLYPHS[glyph]}
     <h1 class="title">${esc(title)}</h1>
-    ${body}`;
+    ${lines}
+    ${code ? `<p class="code">${code}</p>` : ""}
+    ${actions}`;
 }
 
 // ---------------------------------------------------------------- views
 
 function renderInvalid() {
-  view.innerHTML = page(
-    "Mindfull",
-    "Nothing to open here",
-    `<p class="actions"><button class="btn btn-lg" id="leave">Close tab</button></p>`
-  );
+  view.innerHTML = page({
+    title: "Nothing to open here",
+    lines: `<p class="wait">This tab has no site address to go on to.</p>`,
+    code: "ERR_NO_ADDRESS",
+    actions: `<p class="actions solo"><button class="btn btn-lg btn-primary" id="leave">Close tab</button></p>`,
+  });
   $("#leave").addEventListener("click", closeTab);
 }
 
 function renderAllowed(st) {
-  view.innerHTML = page(
-    st.domain || hostOf(target),
-    "You're clear to go",
-    `<p class="actions"><button class="btn btn-lg" id="continue">Continue</button><button class="btn btn-lg" id="leave">Leave</button></p>`
-  );
+  view.innerHTML = page({
+    title: "You're clear to go",
+    lines: `<p class="wait">${esc(st.domain || hostOf(target))} isn't paused right now.</p>`,
+    actions: `<p class="actions"><button class="btn btn-lg" id="leave">Leave</button><button class="btn btn-lg btn-primary" id="continue">Continue</button></p>`,
+  });
   $("#leave").addEventListener("click", leave);
   $("#continue").addEventListener("click", () => location.replace(target));
 }
 
 function renderHardblock(st) {
   const d = esc(st.domain);
-  let title, line;
+  let title, line, code;
   if (st.reason === "focus") {
     title = "You're in a focus session";
-    line = `Opens again in <b data-until="${st.until}"></b>.`;
+    line = `${d} is closed during your focus session. It opens again in <span data-until="${st.until}"></span>.`;
+    code = "ERR_FOCUS_SESSION";
   } else if (st.reason === "schedule") {
     title = "Restricted hours";
-    line = `Opens again at ${esc(whenText(st.until))}.`;
+    line = `${d} is closed during restricted hours. It opens again at ${esc(whenText(st.until))}.`;
+    code = "ERR_RESTRICTED_HOURS";
   } else if (st.limit === 0) {
     title = "This one stays closed";
     line = `You set ${d} to zero opens a day.`;
+    code = "ERR_SITE_CLOSED";
   } else {
     title = "That's all for today";
-    line = "Opens again at midnight.";
+    line = `${d} has had all its opens for today. It opens again at ${esc(whenText(st.until))}.`;
+    code = "ERR_DAILY_LIMIT_REACHED";
   }
-  view.innerHTML = page(
-    st.domain,
+  view.innerHTML = page({
+    glyph: "closed",
     title,
-    `<p class="wait">${line}</p>
-     <p class="actions"><button class="btn btn-lg" id="leave">Leave</button></p>
-     <p class="today">${esc(todayLine(st))}</p>`
-  );
+    lines: `<p class="wait">${line}</p>
+      <p class="today">${esc(todayLine(st))}</p>`,
+    code,
+    actions: `<p class="actions solo"><button class="btn btn-lg btn-primary" id="leave">Leave</button></p>`,
+  });
   tickCountdowns();
   $("#leave").addEventListener("click", leave);
-  // The background doesn't always write storage when a block lifts (e.g. at midnight), so re-check then.
+  // The background doesn't always write storage when a block lifts (e.g. at 04:00), so re-check then.
   clearTimeout(refreshTimer);
   if (st.until) refreshTimer = setTimeout(refresh, Math.max(1000, st.until - Date.now() + 1500));
 }
@@ -132,14 +149,15 @@ async function renderPause(st) {
     if (begun && begun.status) return render({ ...st, ...begun.status });
     return;
   }
-  view.innerHTML = page(
-    st.domain,
-    reason === "expired" ? "Time's up" : heading,
-    `<p class="wait" id="countline">Wait <b id="count"></b>s to enter</p>
-     <p class="hint" id="hint"></p>
-     <p class="actions" id="actions"><button class="btn btn-lg" id="leave">Leave</button><button class="btn btn-lg" id="stay" disabled>Enter</button></p>
-     <p class="today">${esc(todayLine(st))}</p>`
-  );
+  const expired = reason === "expired";
+  view.innerHTML = page({
+    title: expired ? "Time's up" : heading,
+    lines: `<p class="wait" id="countline">${esc(st.domain)} is paused. Wait <span id="count"></span>s to enter.</p>
+      <p class="hint" id="hint"></p>
+      <p class="today">${esc(todayLine(st))}</p>`,
+    code: expired ? "ERR_TIME_UP" : null,
+    actions: `<p class="actions" id="actions"><button class="btn btn-lg" id="stay" disabled>Enter</button><button class="btn btn-lg btn-primary" id="leave">Leave</button></p>`,
+  });
   $("#leave").addEventListener("click", leave);
   $("#stay").addEventListener("click", () => renderDurations(st));
   startCountdown(begun.waitSeconds);
@@ -170,7 +188,7 @@ function startCountdown(seconds) {
       stay.disabled = false;
       stay.textContent = "Enter";
       count.textContent = "";
-      countline.textContent = "You can enter now.";
+      countline.textContent = status && status.domain ? `You can enter ${status.domain} now.` : "You can enter now.";
       hint.textContent = "";
     }
     rafId = requestAnimationFrame(frame);
@@ -179,7 +197,7 @@ function startCountdown(seconds) {
 }
 
 function renderDurations(st) {
-  $("#countline").textContent = "For how long?";
+  $("#countline").textContent = `How long do you need on ${st.domain}?`;
   $("#hint").textContent = "";
   $("#actions").outerHTML = `
     <p class="actions dur-list" id="actions">${st.durations

@@ -180,7 +180,7 @@ test("describeOp", () => {
   expect(describeOp({ type: "pauseProtection", minutes: null }, s)).toBe("Turn protection off");
   expect(describeOp({ type: "pauseProtection", minutes: 60 }, s)).toBe("Pause protection for 1 h");
   expect(describeOp({ type: "removeSchedule", id: "s1" }, s)).toBe(
-    "Remove restricted hours: Weekdays 09:00–17:00 · youtube.com"
+    "Remove restricted hours: Weekdays 09:00–17:00, youtube.com"
   );
   expect(describeOp({ type: "setSetting", key: "cooldownMinutes", value: 5 }, s)).toBe(
     "Cooldown for loosening changes: 5 min"

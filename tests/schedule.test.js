@@ -97,7 +97,7 @@ describe("validateSchedule / describeSchedule", () => {
   });
 
   test("description", () => {
-    expect(describeSchedule(weekdays)).toBe("Weekdays 09:00–17:00 · all sites");
-    expect(describeSchedule(fridayNight)).toBe("Fri 22:00–02:00 · youtube.com");
+    expect(describeSchedule(weekdays)).toBe("Weekdays 09:00–17:00, all sites");
+    expect(describeSchedule(fridayNight)).toBe("Fri 22:00–02:00, youtube.com");
   });
 });

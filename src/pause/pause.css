@@ -1,21 +1,33 @@
-/* Centre the content in the window, sitting slightly above the middle. */
+/* The pause page reads like a browser's "can't open this site" page: a grey icon, a heading,
+   a couple of grey lines, a small error code, and the buttons along the bottom. */
 body {
   min-height: 100vh;
   display: grid;
   place-items: center;
 }
 .pause {
-  width: min(520px, 100%);
-  padding: 32px 20px 12vh;
+  width: min(480px, 100%);
+  padding: 32px 24px 12vh;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 10px;
 }
 
-.site { color: var(--muted); font-size: 15px; }
-.title { color: var(--title); font-size: 30px; font-weight: normal; }
-.wait { font-size: 18px; }
-.hint { margin-top: -8px; font-size: 14px; color: var(--muted); }
+.glyph { width: 64px; height: 64px; color: var(--glyph); margin-bottom: 14px; }
+.title { font-size: 26px; line-height: 1.25; }
+.wait, .today { color: var(--muted); }
+.hint { color: var(--muted); font-size: 14px; font-style: italic; }
 .hint:empty { display: none; }
-.actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-.today { font-size: 14px; color: var(--muted); }
+.code { font-size: 12px; letter-spacing: 0.03em; color: var(--muted); overflow-wrap: anywhere; }
+
+.actions {
+  margin-top: 22px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+.actions.solo { justify-content: flex-end; }
+.actions.dur-list { justify-content: flex-start; }
+.actions.dur-list .link-btn { margin-left: auto; }

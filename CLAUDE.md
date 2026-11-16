@@ -10,7 +10,7 @@ Mindfull is a Manifest V3 browser extension for Chrome and Firefox. It puts a sh
 npm install
 npm test                                   # Jest, tests/*.test.js (plain CommonJS, no transform)
 npx jest tests/policy.test.js              # one file
-npx jest -t "reset exactly at local midnight"    # one test by name (substring of the test title)
+npx jest -t "reset exactly at 4 am"        # one test by name (substring of the test title)
 npm run build:all | build:chrome | build:firefox  # → dist/<browser>/
 npm run build:dev                          # __DEV__=true: adds 1-minute unlock/cooldown/focus options
 npm run zip:all                            # build + releases/mindfull-<browser>.zip (adm-zip, cross-platform)
@@ -42,19 +42,19 @@ There is no lint step. Load `dist/chrome` via chrome://extensions → Load unpac
   - `usage.js` does time-spent tracking.
   - `friction.js` holds the wait escalation and `phrasesFor(op)` / `isCommitPhrase(typed, op)`.
   - `defaults.js` holds settings defaults, UI option lists and all user-facing phrase lists.
-  - `ui.js` holds the DOM helpers shared by the pages (`send`, `submitOp`, `commitModal`, the countdown ticker, `onMidnight`).
+  - `ui.js` holds the DOM helpers shared by the pages (`send`, `submitOp`, `commitModal`, the countdown ticker, `onDayStart`).
 - **State** is in `chrome.storage.local`:
   - `settings`;
   - `runtime` (unlocks, focus, pause, pending ops, wait start times, the open time-tracking segment);
   - `stats[day][domain]` = opens;
   - `usage[day][domain]` = ms.
 
-  Day keys are local dates, so all daily counts reset at local midnight.
+  Day keys come from `time.js` `dayKey`: a day runs 04:00 to 04:00 local (`DAY_START_HOUR`), so all daily counts reset at 4 am, not midnight. Use `dayKey`/`nextDayStart` for anything daily; restricted hours (`schedule.js`) stay on calendar days.
 - **Background (`src/background/`)** is the only writer.
   - `store.js` `mutate()` serialises read-modify-write.
   - `reconcile.js` `reconcile()` is idempotent. It runs on install/startup, every alarm (exact per-deadline alarms plus a 1-minute `tick`) and after every change. It advances state, syncs the DNR rules, redirects open tabs that are no longer allowed (`?r=expired` if an unlock just ran out), credits time spent (`trackActive`), and syncs alarms and the badge.
   - `handlers.js` handles the messages from `src/shared/messages.js` and rejects senders other than this extension. `GET_STATE` and `GET_SITE_STATUS` return `advance()`d state without saving it.
-- **Pages** (`pause`, `popup`, `options`) never write storage. They send messages and re-render on `storage.onChanged` and at midnight.
+- **Pages** (`pause`, `popup`, `options`) never write storage. They send messages and re-render on `storage.onChanged` and at the 4 am day start (`onDayStart`).
 
 ### Key flows (each spans several files)
 
@@ -80,12 +80,13 @@ There is no lint step. Load `dist/chrome` via chrome://extensions → Load unpac
 
 ## Conventions
 
-- **Design:** deliberately low-styling "old textboard":
-  - grey `#efefef` page and red headings;
-  - native, unstyled buttons and selects;
-  - default blue links and MS PGothic.
+- **Design:** the pause page looks like a plain browser "can't open this site" error page:
+  - a big grey icon (pause bars while you can still enter, one bar when closed);
+  - a system-font heading and short grey lines;
+  - a small `ERR_…` code on time-up and closed states (`ERR_TIME_UP`, `ERR_DAILY_LIMIT_REACHED`…), but none on the normal wait;
+  - Enter as an outlined button and Leave as the one filled blue button.
 
-  The owner rejected polished, glossy and decorative versions. Keep it plain, and keep the pause page minimal: heading, wait, Leave/Enter, one line of today's opens and time.
+  Light and dark follow the system through the tokens in `ui.css`, and the popup and options pages share them. The owner rejected both polished/glossy versions and a bare textboard look ("too boring"). Keep it plain, with no animation or decoration, and keep the pause page minimal: heading, wait, one line of today's opens and time, Leave/Enter.
 - **Copy:** plain sentence case. The pause-page action is "Enter", not "Stay".
 - **Adding a setting:** add it to `DEFAULT_SETTINGS`, to `SETTING_RULES` in `ops.js` (validity, whether a change loosens it, and its label), and to the options page.
 - **Phrase lists:** removal sentences use a `{site}` placeholder and are checked per op in the background.

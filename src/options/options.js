@@ -2,7 +2,7 @@
 // commit-phrase modal for loosening changes. The page re-renders from background state.
 
 const M = require("../shared/messages");
-const { send, esc, $, startTicker, tickCountdowns, onStateChange, onMidnight, toast, submitOp } = require("../shared/ui");
+const { send, esc, $, startTicker, tickCountdowns, onStateChange, onDayStart, toast, submitOp } = require("../shared/ui");
 const { coversHost } = require("../shared/domains");
 const { siteStatus, isPaused, isFocusing } = require("../shared/policy");
 const { describeOp } = require("../shared/ops");
@@ -351,7 +351,7 @@ async function checkIncognito() {
   await refresh();
   startTicker();
   onStateChange(refresh);
-  onMidnight(refresh);
+  onDayStart(refresh);
   document.addEventListener("mindfull:elapsed", () => setTimeout(refresh, 1200));
   checkPermissions();
   checkIncognito();

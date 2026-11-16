@@ -10,8 +10,8 @@
 </head>
 <body>
   <div class="page">
-    <h1 class="page-title">Mindfull settings</h1>
-    <p>Stricter changes apply right away. Loosening one means typing a sentence, then waiting out the cooldown.</p>
+    <h1 class="page-title"><svg viewBox="0 0 64 64" aria-hidden="true"><rect x="4" y="4" width="56" height="56" rx="6" fill="none" stroke="currentColor" stroke-width="5"/><rect x="21" y="19" width="8" height="26" fill="currentColor"/><rect x="35" y="19" width="8" height="26" fill="currentColor"/></svg>Mindfull settings</h1>
+    <p class="muted">Stricter changes apply right away. Loosening one means typing a sentence, then waiting out the cooldown.</p>
     <p class="toc">
       <a href="#sites">Sites</a> |
       <a href="#limits">Daily opens</a> |
@@ -49,7 +49,7 @@
 
     <section class="sec" id="limits">
       <h2>Daily opens</h2>
-      <p class="muted">How many times a day you can enter each site. Once they're used up, the site stays closed until midnight, when the count resets.</p>
+      <p class="muted">How many times a day you can enter each site. Once they're used up, the site stays closed until 4 am, when the count resets.</p>
       <label class="row">Default for each site: <select id="default-limit" class="select"></select></label>
     </section>
 
@@ -85,7 +85,7 @@
 
     <section class="sec" id="friction">
       <h2>Wait and cooldown</h2>
-      <p class="muted">The wait before Enter doubles with each visit to a site, from the first wait up to the longest. It goes back to the first wait at midnight.</p>
+      <p class="muted">The wait before Enter doubles with each visit to a site, from the first wait up to the longest. It goes back to the first wait at 4 am.</p>
       <table class="form-table">
         <tr><th><label for="base-wait">First wait</label></th><td><select id="base-wait" class="select"></select></td></tr>
         <tr><th><label for="max-wait">Longest wait</label></th><td><select id="max-wait" class="select"></select></td></tr>

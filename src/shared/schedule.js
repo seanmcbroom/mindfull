@@ -104,7 +104,7 @@ function validateSchedule(s) {
   return null;
 }
 
-/** "Mon–Fri 09:00–17:00 · all sites" */
+/** "Mon–Fri 09:00–17:00, all sites" */
 function describeSchedule(s) {
   const days = [...s.days].sort((a, b) => a - b);
   let dayText;
@@ -113,7 +113,7 @@ function describeSchedule(s) {
   else if (days.join() === "0,6") dayText = "Weekends";
   else dayText = days.map((d) => DAY_NAMES[d]).join(", ");
   const sites = s.sites === "all" ? "all sites" : s.sites.join(", ");
-  return `${dayText} ${s.start}–${s.end} · ${sites}`;
+  return `${dayText} ${s.start}–${s.end}, ${sites}`;
 }
 
 module.exports = {

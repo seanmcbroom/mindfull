@@ -1,20 +1,38 @@
-/* Mindfull's look: an old textboard. Grey page, red thread title, green poster name,
-   numbered posts, default blue links and the browser's own buttons. Kept deliberately plain. */
+/* Mindfull's look: a plain browser error page. White (or dark) page, system font, a big grey
+   icon on the pause page, grey supporting text, one blue for buttons and links. No decoration. */
 
 :root {
   color-scheme: light;
-  --bg: #efefef;
-  --fg: #000000;
-  --title: #ff0000;
-  --name: #008000;
-  --link: #0000ff;
-  --vlink: #660099;
-  --muted: #555555;
-  --line: #999999;
-  --danger: #cc0000;
-  --ok: #008000;
-  --paper: #ffffff;
-  --font: "MS PGothic", "ＭＳ Ｐゴシック", "IPAMonaPGothic", "Mona", "Hiragino Kaku Gothic Pro", sans-serif;
+  --bg: #ffffff;
+  --fg: #1d1f23;
+  --muted: #5c6370;
+  --glyph: #a6abb3;
+  --line: #d3d7dd;
+  --paper: #f4f5f7;
+  --primary: #1b66d6;
+  --primary-hover: #1756b5;
+  --on-primary: #ffffff;
+  --tint: #eaf1fc;
+  --danger: #c5221f;
+  --ok: #1e7e34;
+  --font: system-ui, "Segoe UI", -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --bg: #202226;
+    --fg: #e6e8eb;
+    --muted: #a2a8b2;
+    --glyph: #676d77;
+    --line: #3e434a;
+    --paper: #2a2d32;
+    --primary: #8db6ff;
+    --primary-hover: #a9c7ff;
+    --on-primary: #0d1a30;
+    --tint: #2b3442;
+    --danger: #f28b82;
+    --ok: #81c995;
+  }
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -25,92 +43,117 @@ body {
   background: var(--bg);
   color: var(--fg);
   font-family: var(--font);
-  font-size: 16px;
-  line-height: 1.4;
+  font-size: 15px;
+  line-height: 1.45;
 }
 
 h1, h2, h3, p { margin: 0; }
-a { color: var(--link); }
-a:visited { color: var(--vlink); }
-hr { border: none; border-top: 1px solid var(--line); margin: 10px 0; }
+h1, h2, h3 { font-weight: 500; text-wrap: balance; }
+a { color: var(--primary); }
+hr { border: none; border-top: 1px solid var(--line); margin: 12px 0; }
 
 .muted { color: var(--muted); }
 .small { font-size: 13px; }
 .tabular { font-variant-numeric: tabular-nums; }
-.row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .row.end { justify-content: flex-end; }
 .stack { display: flex; flex-direction: column; gap: 8px; }
 .grow { flex: 1 1 auto; min-width: 0; }
 
-/* Buttons and fields are left as the browser draws them. These classes only tweak text. */
+/* Buttons: outlined in the link colour; .btn-primary is the one filled button on a screen. */
+.btn, .chip {
+  font: 500 14px/1.2 var(--font);
+  padding: 7px 14px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--primary);
+  cursor: pointer;
+}
+.btn:hover:not(:disabled), .chip:hover:not(:disabled) { background: var(--tint); }
+.btn:disabled { color: var(--muted); cursor: default; }
+.btn-primary { background: var(--primary); border-color: var(--primary); color: var(--on-primary); }
+.btn-primary:hover:not(:disabled) { background: var(--primary-hover); border-color: var(--primary-hover); }
 .btn-danger { color: var(--danger); }
-.btn-lg { font-size: 16px; padding: 5px 18px; min-width: 88px; }
-.input, .select { min-width: 0; font-size: 14px; }
+.btn-sm { padding: 4px 10px; font-size: 13px; }
+.btn-lg { padding: 9px 18px; }
+
+.input, .select {
+  min-width: 0;
+  font: 14px var(--font);
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--fg);
+}
 
 .link-btn {
   appearance: none; background: none; border: none; padding: 0; margin: 0; cursor: pointer;
-  font: inherit; color: var(--link); text-decoration: underline;
+  font: inherit; color: var(--primary); text-decoration: underline;
 }
-.link-btn:focus-visible, .chip:focus-visible { outline: 2px solid var(--link); outline-offset: 1px; }
+.btn:focus-visible, .chip:focus-visible, .link-btn:focus-visible,
+.input:focus-visible, .select:focus-visible, a:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
 
-/* Toggle buttons (days, time options) show a checkbox mark; plain chips are just buttons. */
-.chips { display: flex; gap: 4px; flex-wrap: wrap; }
-.chip { font-size: 14px; }
-.chip[aria-pressed="false"]::before { content: "☐ "; }
-.chip[aria-pressed="true"]::before { content: "☑ "; }
-.chip[aria-pressed="true"] { font-weight: bold; }
+/* Toggle buttons (days, time options): pressed ones are tinted and ticked. */
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip { padding: 4px 10px; font-size: 13px; }
+.chip[aria-pressed="true"] { background: var(--tint); border-color: var(--primary); }
+.chip[aria-pressed="true"]::before { content: "✓ "; }
 
-/* States written as text in brackets */
-.pill { white-space: nowrap; font-size: 14px; }
-.pill::before { content: "("; }
-.pill::after { content: ")"; }
+/* Small state tag: on / off */
+.pill {
+  white-space: nowrap;
+  font-size: 12px;
+  padding: 1px 6px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  color: var(--muted);
+}
 .pill.on { color: var(--ok); }
 .pill.off { color: var(--danger); }
-
-/* Thread and posts */
-.thread-title { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 4px; color: var(--title); }
-.thread-title .site { font-size: 20px; }
-.thread-title h1 { font-size: 20px; font-weight: normal; }
-.post { margin: 0 0 14px; }
-.post dt { font-size: 15px; }
-.post dt .name { color: var(--name); font-weight: bold; }
-.post dt .trip { color: var(--name); }
-.post dd { margin: 6px 0 0 2.2em; display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
-.aa { white-space: pre; font-size: 16px; }
 
 /* Confirm box */
 .modal-backdrop {
   position: fixed; inset: 0; z-index: 100;
   display: grid; place-items: center; padding: 16px;
-  background: rgba(0, 0, 0, 0.25);
+  background: rgba(0, 0, 0, 0.45);
 }
 .modal {
   width: min(460px, 100%);
   background: var(--bg);
-  border: 1px solid var(--fg);
-  padding: 12px 14px;
-  display: flex; flex-direction: column; gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 20px;
+  display: flex; flex-direction: column; gap: 12px;
 }
-.modal h2 { font-size: 17px; color: var(--title); font-weight: normal; }
+.modal h2 { font-size: 18px; }
+.modal p { color: var(--muted); }
 .modal .input { width: 100%; }
 .phrase {
-  padding: 6px 8px;
+  padding: 8px 10px;
   background: var(--paper);
   border: 1px dashed var(--line);
-  font-weight: bold;
+  border-radius: 4px;
+  color: var(--fg);
+  font-weight: 600;
   user-select: none;
   -webkit-user-select: none;
 }
 
 /* Status message */
 .toast {
-  position: fixed; right: 10px; bottom: 10px; z-index: 200;
-  max-width: min(340px, calc(100% - 20px));
-  padding: 4px 8px;
-  background: var(--paper);
-  border: 1px solid var(--fg);
+  position: fixed; right: 12px; bottom: 12px; z-index: 200;
+  max-width: min(340px, calc(100% - 24px));
+  padding: 8px 12px;
+  border-radius: 4px;
+  background: var(--fg);
+  color: var(--bg);
   font-size: 13px;
   display: none;
 }
 .toast.show { display: block; }
-.toast[data-kind="error"] { color: var(--danger); }
+.toast[data-kind="error"] { background: var(--danger); color: var(--bg); }

@@ -31,21 +31,21 @@ describe("siteStatus", () => {
     expect(siteStatus(s, "youtube.com", MON + 5 * MIN).mode).toBe("pause");
   });
 
-  test("daily limit reached -> hardblock until midnight, but the unlock that hit it still works", () => {
+  test("daily limit reached -> hardblock until 4 am, but the unlock that hit it still works", () => {
     const stats = { [today]: { "youtube.com": 5 } };
     expect(siteStatus(makeState({ stats }), "youtube.com", MON)).toMatchObject({
       mode: "hardblock",
       reason: "limit",
-      until: at(2026, 11, 17, 0, 0),
+      until: at(2026, 11, 17, 4, 0),
     });
     const unlocked = makeState({ stats, runtime: { unlocks: { "youtube.com": MON + MIN } } });
     expect(siteStatus(unlocked, "youtube.com", MON).mode).toBe("allowed");
   });
 
-  test("opens, the daily limit and the wait all reset exactly at local midnight", () => {
+  test("opens, the daily limit and the wait all reset exactly at 4 am, not midnight", () => {
     const { usageToday } = require("../src/shared/usage");
-    const lastSecond = at(2026, 11, 16, 23, 59, 59);
-    const midnight = at(2026, 11, 17, 0, 0, 0);
+    const lastSecond = at(2026, 11, 17, 3, 59, 59);
+    const dayStart = at(2026, 11, 17, 4, 0, 0);
     const s = makeState({
       stats: { [dayKey(lastSecond)]: { "youtube.com": 5 } },
       usage: { [dayKey(lastSecond)]: { "youtube.com": 3600000 } },
@@ -53,13 +53,13 @@ describe("siteStatus", () => {
     expect(siteStatus(s, "youtube.com", lastSecond)).toMatchObject({
       mode: "hardblock",
       reason: "limit",
-      until: midnight,
+      until: dayStart,
       unlocksToday: 5,
       waitSeconds: 120,
     });
-    expect(siteStatus(s, "youtube.com", midnight)).toMatchObject({ mode: "pause", unlocksToday: 0, waitSeconds: 10 });
+    expect(siteStatus(s, "youtube.com", dayStart)).toMatchObject({ mode: "pause", unlocksToday: 0, waitSeconds: 10 });
     expect(usageToday(s, "youtube.com", lastSecond)).toBe(3600000);
-    expect(usageToday(s, "youtube.com", midnight)).toBe(0);
+    expect(usageToday(s, "youtube.com", dayStart)).toBe(0);
   });
 
   test("limit resets the next day", () => {

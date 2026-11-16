@@ -2,16 +2,22 @@
 
 const pad = (n) => String(n).padStart(2, "0");
 
-/** Local calendar day, e.g. "2026-11-15". */
+/** A Mindfull "day" runs from 04:00 to 04:00 local, so a 1 am scroll counts toward the evening before. */
+const DAY_START_HOUR = 4;
+
+/** The day `now` belongs to, e.g. "2026-11-15" (03:59 on the 16th is still the 15th). */
 function dayKey(now) {
   const d = new Date(now);
+  // Step back a calendar day rather than 24 h of ms, so DST changes can't skip or repeat a day.
+  if (d.getHours() < DAY_START_HOUR) d.setDate(d.getDate() - 1);
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 }
 
-/** Timestamp of the next local midnight. */
-function nextMidnight(now) {
+/** Timestamp of the next 04:00 local, when daily counts reset. */
+function nextDayStart(now) {
   const d = new Date(now);
-  d.setHours(24, 0, 0, 0);
+  d.setHours(DAY_START_HOUR, 0, 0, 0);
+  if (d.getTime() <= now) d.setDate(d.getDate() + 1);
   return d.getTime();
 }
 
@@ -48,4 +54,4 @@ function fmtMinutes(min) {
   return m ? `${h} h ${m} min` : `${h} h`;
 }
 
-module.exports = { pad, dayKey, nextMidnight, parseHM, fmtClock, fmtCountdown, fmtMinutes };
+module.exports = { pad, DAY_START_HOUR, dayKey, nextDayStart, parseHM, fmtClock, fmtCountdown, fmtMinutes };

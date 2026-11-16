@@ -4,7 +4,7 @@ A browser extension for Chrome and Firefox that puts a short wait in front of th
 
 ## What it does
 
-When you open a site on your list, Mindfull shows a plain page instead. The heading is picked at random each time, e.g. "This may be an impulse", "Is this on purpose?" or "Habit or choice?". The page also shows:
+When you open a site on your list, Mindfull shows a plain "blocked" page instead. The heading is picked at random each time, e.g. "This may be an impulse", "Is this on purpose?" or "Habit or choice?". The page also shows:
 
 - **Wait 10s to enter.** The Enter button unlocks when the wait is over. The timer pauses while the tab isn't in front of you.
 - **Leave** goes back to where you came from, or closes the tab.
@@ -13,18 +13,18 @@ When you open a site on your list, Mindfull shows a plain page instead. The head
 
 ### Daily reset
 
-Everything daily resets at **local midnight**:
+Everything daily resets at **4 am** local time, not midnight, so scrolling at 1 am still counts toward the evening it belongs to:
 - the open count;
 - the daily limit;
 - the wait, which goes back to the first wait;
 - time spent.
 
-Pages left open, such as settings or a "closed until midnight" page, refresh themselves at midnight.
+Pages left open, such as settings or a "closed until 4 am" page, refresh themselves at 4 am.
 
 ### Limits and friction
 
 - **Escalating wait:** each visit to the same site in a day doubles the wait (10s → 20s → 40s …, up to 2 min by default).
-- **Daily opens:** how many times a day you can enter each site (default 5, or set per site). Once they're used up, the site is closed until midnight.
+- **Daily opens:** how many times a day you can enter each site (default 5, or set per site). Once they're used up, the site is closed until 4 am.
 - **Restricted hours:** schedules (e.g. weekdays 9 to 5) when chosen sites are closed, with no Enter button.
 - **Focus sessions:** 25, 50 or 90 minutes from the toolbar popup, with every listed site closed.
 - **Friction for loosening:** making things stricter applies right away. Loosening needs two steps: first you type a sentence (pasting is blocked), then the change waits out a cooldown (default 10 min) that you can cancel. Loosening means removing a site, raising a limit, shortening the wait, pausing or turning off Mindfull, or ending a focus session early. Removing a site uses a sentence that names it, e.g. "I want youtube.com to open without asking".
@@ -37,7 +37,7 @@ Everything stays in this browser. Nothing is sent anywhere. Open counts and time
 
 ### Look
 
-Deliberately plain, like an old textboard: grey page, red headings, the browser's own buttons and links. There are no animations or decorations, because the page itself shouldn't be another distraction.
+The pause page looks like a browser's "can't open this site" page: a big grey icon, a heading, a line or two of grey text and a blue Leave button. Closed states add a small error code such as `ERR_DAILY_LIMIT_REACHED`. It follows your system's light or dark setting. There are no animations or decorations, because the page itself shouldn't be another distraction.
 
 ### Changing the wording
 
@@ -74,7 +74,7 @@ npm run icons          # regenerate icons/*.png
   - `rules.js` turns state into `declarativeNetRequest` redirect rules, one per closed site. The original URL travels in the pause page's hash.
   - `usage.js` does the time-spent bookkeeping.
   - `friction.js` holds the escalating wait and the sentence checks.
-  - `time.js` holds the local-day keys and the midnight maths.
+  - `time.js` holds the day keys (a day runs 04:00 to 04:00, `DAY_START_HOUR`) and the clock maths.
 - **`src/background/`** is the only code that writes storage.
   - `reconcile()` runs on startup, on every alarm (including a 1-minute tick) and after every change. It applies due changes, expires unlocks, syncs the redirect rules, sends tabs that are no longer allowed back to the pause page, credits time spent, and updates alarms and the toolbar badge.
 - **`src/pause`, `src/popup` and `src/options`** are the pages. They never write storage: they send messages (`src/shared/messages.js`) and re-render when storage changes.

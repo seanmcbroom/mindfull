@@ -1,6 +1,6 @@
 // The single decision function: what happens when the user opens a listed site right now.
 
-const { dayKey, nextMidnight } = require("./time");
+const { dayKey, nextDayStart } = require("./time");
 const { activeRestriction } = require("./schedule");
 const { waitSeconds } = require("./friction");
 
@@ -58,7 +58,7 @@ function siteStatus(state, domain, now) {
   const unlockedUntil = runtime.unlocks[domain];
   if (unlockedUntil && unlockedUntil > now) return { ...base, mode: "allowed", reason: "unlocked", until: unlockedUntil };
 
-  if (count >= limitValue(limit)) return { ...base, mode: "hardblock", reason: "limit", until: nextMidnight(now) };
+  if (count >= limitValue(limit)) return { ...base, mode: "hardblock", reason: "limit", until: nextDayStart(now) };
 
   return { ...base, mode: "pause" };
 }
