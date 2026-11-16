@@ -31,7 +31,7 @@ function unlocksToday(stats, domain, now) {
 
 /**
  * Decide what opening `domain` means at `now`.
- * mode: "allowed" | "pause" (breathing wait, then Stay is possible) | "hardblock" (Leave only)
+ * mode: "allowed" | "pause" (wait, then Enter is possible) | "hardblock" (Leave only)
  * reason: unlisted | paused | unlocked | focus | schedule | limit | null
  * Precedence: protection paused > focus > restricted hours > active unlock > daily limit > pause.
  */

@@ -3,7 +3,7 @@
   "name": "Mindfull — pause before you scroll",
   "short_name": "Mindfull",
   "version": "0.1.0",
-  "description": "Asks \"Do you need this right now?\" before distracting sites, with a breathing pause, time limits and friction to turn it off.",
+  "description": "Puts a short wait in front of the sites you open on autopilot, with daily limits, restricted hours, focus sessions and friction for turning it off.",
 
   "permissions": ["declarativeNetRequest", "storage", "alarms", "tabs"],
   "host_permissions": ["<all_urls>"],

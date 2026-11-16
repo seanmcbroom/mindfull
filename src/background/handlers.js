@@ -61,7 +61,7 @@ async function requestUnlock({ domain, minutes }, sender) {
     const started = state.runtime.pauseStarts[key];
     // Small tolerance for timer jitter between page and worker.
     if (!started || now - started < status.waitSeconds * 1000 - 750) {
-      return { state, result: { ok: false, error: "Finish the pause first." } };
+      return { state, result: { ok: false, error: "Finish the wait first." } };
     }
     delete state.runtime.pauseStarts[key];
     state.runtime.unlocks[domain] = now + minutes * 60000;

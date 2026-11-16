@@ -1,44 +1,85 @@
 # Mindfull
 
-A browser extension (Chrome and Firefox) that puts a mindful pause between you and distracting sites.
+A browser extension for Chrome and Firefox that puts a short wait in front of the sites you open on autopilot.
 
-When you open a site on your list, Mindfull asks **"Do you need this right now?"**
+## What it does
 
-- **Leave** takes you back, or closes the tab.
-- **Stay** unlocks only after a guided breathing pause. The pause doubles with each unlock of that site today (10s → 20s → 40s …, up to 2 min). Then you choose how long you need. When that time is up, the tab comes back to the pause page and the next pause is longer.
+When you open a site on your list, Mindfull shows a plain page instead. The heading is picked at random each time, e.g. "This may be an impulse", "Is this on purpose?" or "Habit or choice?". The page also shows:
 
-More features:
+- **Wait 10s to enter.** The Enter button unlocks when the wait is over. The timer pauses while the tab isn't in front of you.
+- **Leave** goes back to where you came from, or closes the tab.
+- **Enter** asks how long you need (5, 10, 15 or 30 minutes) and then lets you in. When the time is up, the tab comes back to the page ("Time's up").
+- **Today's count:** how many times you've opened the site today and how long you've spent on it, e.g. "Opened 3 times today, 24 min in total."
 
-- **Daily opens:** a per-site cap on how many times you can choose Stay each day. Once it's reached, the site stays closed until midnight.
-- **Restricted hours:** schedules (e.g. weekdays 9–5) during which sites are fully blocked.
-- **Focus sessions:** 25/50/90 minutes with every listed site fully blocked.
-- **Friction for loosening:** making things stricter applies instantly. Removing a site, raising a limit, pausing protection or ending a focus session early requires typing a commitment sentence (no pasting). The change then only takes effect after a cooldown (default 10 min), and you can cancel it until then.
+### Daily reset
 
-Everything is stored locally in the browser. Nothing is sent anywhere.
+Everything daily resets at **local midnight**:
+- the open count;
+- the daily limit;
+- the wait, which goes back to the first wait;
+- time spent.
+
+Pages left open, such as settings or a "closed until midnight" page, refresh themselves at midnight.
+
+### Limits and friction
+
+- **Escalating wait:** each visit to the same site in a day doubles the wait (10s → 20s → 40s …, up to 2 min by default).
+- **Daily opens:** how many times a day you can enter each site (default 5, or set per site). Once they're used up, the site is closed until midnight.
+- **Restricted hours:** schedules (e.g. weekdays 9 to 5) when chosen sites are closed, with no Enter button.
+- **Focus sessions:** 25, 50 or 90 minutes from the toolbar popup, with every listed site closed.
+- **Friction for loosening:** making things stricter applies right away. Loosening needs two steps: first you type a sentence (pasting is blocked), then the change waits out a cooldown (default 10 min) that you can cancel. Loosening means removing a site, raising a limit, shortening the wait, pausing or turning off Mindfull, or ending a focus session early. Removing a site uses a sentence that names it, e.g. "I want youtube.com to open without asking".
+
+### Time spent
+
+Time counts while a listed site is the active tab in a focused browser window. It stops when you switch tabs or apps, and time while the browser is closed or asleep isn't counted.
+
+Everything stays in this browser. Nothing is sent anywhere. Open counts and time spent are kept for 7 days.
+
+### Look
+
+Deliberately plain, like an old textboard: grey page, red headings, the browser's own buttons and links. There are no animations or decorations, because the page itself shouldn't be another distraction.
+
+### Changing the wording
+
+The pause-page headings (`IMPULSE_PHRASES`), the remove-site sentences (`REMOVE_SITE_PHRASES`, where `{site}` is filled in) and the general confirmation sentences (`COMMIT_PHRASES`) are all in `src/shared/defaults.js`.
+
+## Install from source
+
+```bash
+npm install
+npm run build:all
+```
+
+- **Chrome:** open `chrome://extensions`, turn on Developer mode, choose **Load unpacked** and pick `dist/chrome`.
+- **Firefox:** open `about:debugging#/runtime/this-firefox`, choose **Load Temporary Add-on** and pick `dist/firefox/manifest.json`.
+
+To cover private windows, allow Mindfull there from the extension's details page.
 
 ## Develop
 
 ```bash
-npm install
-npm test                 # Jest unit tests for all policy logic (tests/*.test.js)
-npm run build:all        # dist/chrome and dist/firefox
-npm run build:dev        # same, plus 1-minute unlock/cooldown/focus options for manual testing
-npm run zip:all          # build + releases/mindfull-<browser>.zip
-npm run icons            # regenerate icons/*.png
+npm test               # Jest unit tests (tests/*.test.js)
+npm run build:dev      # like build:all, plus 1-minute options for unlocks, cooldown and focus, for manual testing
+npm run zip:all        # build + releases/mindfull-<browser>.zip
+npm run icons          # regenerate icons/*.png
 ```
-
-To load the build:
-
-- **Chrome:** go to `chrome://extensions`, turn on Developer mode, choose **Load unpacked** and select `dist/chrome`.
-- **Firefox:** go to `about:debugging#/runtime/this-firefox`, choose **Load Temporary Add-on** and select `dist/firefox/manifest.json`.
 
 ## How it works
 
-- `src/shared/` holds pure, unit-tested logic. Every function takes `now` explicitly.
-  - `policy.js` (`siteStatus`) decides whether a site is allowed, needs a pause or is hard-blocked. Precedence: protection paused > focus > restricted hours > active unlock > daily limit > pause.
-  - `ops.js` defines every settings change as an op. `isLoosening` is the single source of truth for which changes need the phrase and cooldown; `advance` moves state forward in time.
-  - `rules.js` turns state into `declarativeNetRequest` redirect rules (one per blocked site). The original URL travels in the pause page's hash.
-- `src/background/` is the only writer of `chrome.storage.local`. `reconcile()` is idempotent and runs on startup, on every alarm, every minute and after every change. It applies due pending changes, expires unlocks, syncs DNR rules, sends open tabs that are no longer allowed back to the pause page, and updates alarms and the badge.
-- `src/pause`, `src/popup` and `src/options` are the pages. They never write storage directly: they send messages (`src/shared/messages.js`) and re-render on `storage.onChanged`.
+- **`src/shared/`** is pure logic with no browser APIs. Every function takes `now`, so it's all unit-tested.
+  - `policy.js` (`siteStatus`) decides whether a site is allowed, needs the wait or is closed. Precedence: paused > focus > restricted hours > active unlock > daily limit > wait.
+  - `ops.js` defines every settings change as an op.
+    - `isLoosening` decides which changes need the sentence and the cooldown.
+    - `advance` moves state forward in time: it applies due changes, expires unlocks and prunes old days.
+  - `rules.js` turns state into `declarativeNetRequest` redirect rules, one per closed site. The original URL travels in the pause page's hash.
+  - `usage.js` does the time-spent bookkeeping.
+  - `friction.js` holds the escalating wait and the sentence checks.
+  - `time.js` holds the local-day keys and the midnight maths.
+- **`src/background/`** is the only code that writes storage.
+  - `reconcile()` runs on startup, on every alarm (including a 1-minute tick) and after every change. It applies due changes, expires unlocks, syncs the redirect rules, sends tabs that are no longer allowed back to the pause page, credits time spent, and updates alarms and the toolbar badge.
+- **`src/pause`, `src/popup` and `src/options`** are the pages. They never write storage: they send messages (`src/shared/messages.js`) and re-render when storage changes.
 
-A limitation: an extension can't stop you from disabling it on the browser's extensions page. Mindfull's friction only applies to changes made inside Mindfull.
+## Limitations
+
+- An extension can't stop you disabling it from the browser's extensions page. Mindfull's friction only covers changes made inside Mindfull.
+- Time spent only counts the focused window's active tab. A video playing in a background window isn't counted.

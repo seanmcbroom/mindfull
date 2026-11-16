@@ -16,7 +16,7 @@
       <a href="#sites">Sites</a> |
       <a href="#limits">Daily opens</a> |
       <a href="#hours">Restricted hours</a> |
-      <a href="#friction">Breathing and cooldown</a> |
+      <a href="#friction">Wait and cooldown</a> |
       <a href="#protection">Pause or turn off</a> |
       <a href="#about">Good to know</a>
     </p>
@@ -49,7 +49,7 @@
 
     <section class="sec" id="limits">
       <h2>Daily opens</h2>
-      <p class="muted">How many times a day you can choose Stay on each site. After that, the site stays closed until midnight.</p>
+      <p class="muted">How many times a day you can enter each site. Once they're used up, the site stays closed until midnight, when the count resets.</p>
       <label class="row">Default for each site: <select id="default-limit" class="select"></select></label>
     </section>
 
@@ -57,7 +57,7 @@
 
     <section class="sec" id="hours">
       <h2>Restricted hours</h2>
-      <p class="muted">During these hours, sites stay closed and there's no Stay button.</p>
+      <p class="muted">During these hours, sites stay closed and there's no Enter button.</p>
       <ul id="schedule-list" class="rows"></ul>
       <p><button id="new-schedule" class="btn" type="button">Add restricted hours</button></p>
       <form id="schedule-form" class="schedule-form" hidden>
@@ -84,13 +84,13 @@
     <hr>
 
     <section class="sec" id="friction">
-      <h2>Breathing and cooldown</h2>
-      <p class="muted">The breathing wait doubles with every Stay on a site each day, from the first wait up to the longest.</p>
+      <h2>Wait and cooldown</h2>
+      <p class="muted">The wait before Enter doubles with each visit to a site, from the first wait up to the longest. It goes back to the first wait at midnight.</p>
       <table class="form-table">
         <tr><th><label for="base-wait">First wait</label></th><td><select id="base-wait" class="select"></select></td></tr>
         <tr><th><label for="max-wait">Longest wait</label></th><td><select id="max-wait" class="select"></select></td></tr>
         <tr><th><label for="cooldown">Cooldown for loosening changes</label></th><td><select id="cooldown" class="select"></select></td></tr>
-        <tr><th>Stay options</th><td><div id="duration-chips" class="chips"></div></td></tr>
+        <tr><th>Time options when entering</th><td><div id="duration-chips" class="chips"></div></td></tr>
       </table>
     </section>
 

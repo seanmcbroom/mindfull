@@ -42,6 +42,26 @@ describe("siteStatus", () => {
     expect(siteStatus(unlocked, "youtube.com", MON).mode).toBe("allowed");
   });
 
+  test("opens, the daily limit and the wait all reset exactly at local midnight", () => {
+    const { usageToday } = require("../src/shared/usage");
+    const lastSecond = at(2026, 11, 16, 23, 59, 59);
+    const midnight = at(2026, 11, 17, 0, 0, 0);
+    const s = makeState({
+      stats: { [dayKey(lastSecond)]: { "youtube.com": 5 } },
+      usage: { [dayKey(lastSecond)]: { "youtube.com": 3600000 } },
+    });
+    expect(siteStatus(s, "youtube.com", lastSecond)).toMatchObject({
+      mode: "hardblock",
+      reason: "limit",
+      until: midnight,
+      unlocksToday: 5,
+      waitSeconds: 120,
+    });
+    expect(siteStatus(s, "youtube.com", midnight)).toMatchObject({ mode: "pause", unlocksToday: 0, waitSeconds: 10 });
+    expect(usageToday(s, "youtube.com", lastSecond)).toBe(3600000);
+    expect(usageToday(s, "youtube.com", midnight)).toBe(0);
+  });
+
   test("limit resets the next day", () => {
     const s = makeState({ stats: { [today]: { "youtube.com": 5 } } });
     expect(siteStatus(s, "youtube.com", at(2026, 11, 17, 9, 0)).mode).toBe("pause");

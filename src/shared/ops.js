@@ -18,12 +18,12 @@ const SETTING_RULES = {
   baseWait: {
     valid: (v) => isInt(v, 0, 3600),
     loosens: (o, n) => n < o,
-    label: (v) => `First breathing wait: ${v}s`,
+    label: (v) => `First wait: ${v}s`,
   },
   maxWait: {
     valid: (v) => isInt(v, 0, 3600),
     loosens: (o, n) => n < o,
-    label: (v) => `Longest breathing wait: ${v}s`,
+    label: (v) => `Longest wait: ${v}s`,
   },
   cooldownMinutes: {
     valid: (v) => isInt(v, 0, 1440),
@@ -33,7 +33,7 @@ const SETTING_RULES = {
   unlockDurations: {
     valid: (v) => Array.isArray(v) && v.length > 0 && v.length <= 12 && v.every((x) => isInt(x, 1, 240)),
     loosens: (o, n) => Math.max(...n) > Math.max(...o),
-    label: (v) => `Stay options: ${v.join(", ")} min`,
+    label: (v) => `Time options when entering: ${v.join(", ")} min`,
   },
 };
 

@@ -2,7 +2,7 @@
 // commit-phrase modal for loosening changes. The page re-renders from background state.
 
 const M = require("../shared/messages");
-const { send, esc, $, startTicker, tickCountdowns, onStateChange, toast, submitOp } = require("../shared/ui");
+const { send, esc, $, startTicker, tickCountdowns, onStateChange, onMidnight, toast, submitOp } = require("../shared/ui");
 const { coversHost } = require("../shared/domains");
 const { siteStatus, isPaused, isFocusing } = require("../shared/policy");
 const { describeOp } = require("../shared/ops");
@@ -227,7 +227,7 @@ $("#duration-chips").addEventListener("click", (e) => {
   const current = new Set(ctx.state.settings.unlockDurations);
   if (current.has(m)) current.delete(m);
   else current.add(m);
-  if (!current.size) return toast("Keep at least one Stay option.");
+  if (!current.size) return toast("Keep at least one time option.");
   apply({ type: "setSetting", key: "unlockDurations", value: [...current].sort((a, b) => a - b) });
 });
 
@@ -351,6 +351,7 @@ async function checkIncognito() {
   await refresh();
   startTicker();
   onStateChange(refresh);
+  onMidnight(refresh);
   document.addEventListener("mindfull:elapsed", () => setTimeout(refresh, 1200));
   checkPermissions();
   checkIncognito();

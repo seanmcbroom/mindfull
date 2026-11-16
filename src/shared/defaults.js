@@ -8,10 +8,10 @@ const DEFAULT_SETTINGS = {
   sites: [],                // [{ domain, dailyLimit: null | integer >= 0 }] (null = use default)
   defaultDailyLimit: 5,     // null = no limit
   schedules: [],            // [{ id, days: [0-6], start: "HH:MM", end: "HH:MM", sites: "all" | [domain] }]
-  baseWait: 10,             // seconds for the first unlock of a site each day
+  baseWait: 10,             // seconds to wait before the first Enter on a site each day (resets at midnight)
   maxWait: 120,             // cap for the escalating wait
   cooldownMinutes: 10,      // delay before a loosening change takes effect
-  unlockDurations: [5, 10, 15, 30], // minutes offered after "Stay"
+  unlockDurations: [5, 10, 15, 30], // minutes offered after "Enter"
 };
 
 const DEFAULT_RUNTIME = {

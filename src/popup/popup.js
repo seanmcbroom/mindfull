@@ -1,7 +1,7 @@
 // Toolbar popup: what's happening now, the current site, focus sessions, pending changes.
 
 const M = require("../shared/messages");
-const { send, esc, $, startTicker, tickCountdowns, onStateChange, toast, submitOp } = require("../shared/ui");
+const { send, esc, $, startTicker, tickCountdowns, onStateChange, onMidnight, toast, submitOp } = require("../shared/ui");
 const { hostOf, matchSite, normalizeDomain } = require("../shared/domains");
 const { siteStatus, isPaused, isFocusing } = require("../shared/policy");
 const { describeOp } = require("../shared/ops");
@@ -169,6 +169,7 @@ $("#open-options").addEventListener("click", () => {
   await refresh();
   startTicker();
   onStateChange(refresh);
+  onMidnight(refresh);
   // Re-render when a countdown finishes so expired items disappear.
   document.addEventListener("mindfull:elapsed", () => setTimeout(refresh, 1200));
 })();

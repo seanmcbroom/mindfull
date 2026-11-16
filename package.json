@@ -1,7 +1,7 @@
 {
   "name": "mindfull",
   "version": "0.1.0",
-  "description": "A mindful pause before distracting websites: breathe, decide, and set a time limit.",
+  "description": "A short wait in front of the sites you open on autopilot.",
   "private": true,
   "scripts": {
     "build": "node scripts/build.js",
