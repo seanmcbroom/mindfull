@@ -15,12 +15,12 @@ npm run build:all | build:chrome | build:firefox  # → dist/<browser>/
 npm run build:dev                          # __DEV__=true: adds 1-minute unlock/cooldown/focus options
 npm run zip:all                            # build + releases/mindfull-<browser>.zip (adm-zip, cross-platform)
 npm run icons                              # regenerate icons/*.png (zero-dependency PNG writer)
-npm run screenshots                        # build:chrome + regenerate docs/screenshots/*.png (Puppeteer)
+npm run screenshots                        # build:chrome + regenerate docs/screenshots/ and docs/store/ (Puppeteer)
 ```
 
 There is no lint step. Load `dist/chrome` via chrome://extensions → Load unpacked, or `dist/firefox/manifest.json` via about:debugging. User-facing behaviour is described in `README.md`.
 
-**README screenshots:** `scripts/screenshots.js` loads `dist/chrome` into headless Chrome for Testing. Before each capture it seeds `chrome.storage.local` through the service worker, then writes light and dark PNGs per screen to `docs/screenshots/`. It also stubs `Math.random` so the heading and sentence are fixed, and stubs `chrome.tabs.query` for the popup. Re-run it after visible UI changes. npm's `allowScripts` skips Puppeteer's postinstall, so the script itself runs `puppeteer browsers install chrome`.
+**README screenshots:** `scripts/screenshots.js` loads `dist/chrome` into headless Chrome for Testing. Before each capture it seeds `chrome.storage.local` through the service worker, then writes light and dark PNGs per screen to `docs/screenshots/`. It also writes the 1280×800 store listing image (Chrome Web Store and Firefox Add-ons), `docs/store/pause-1280x800.png`. It also stubs `Math.random` so the heading and sentence are fixed, and stubs `chrome.tabs.query` for the popup. Re-run it after visible UI changes. npm's `allowScripts` skips Puppeteer's postinstall, so the script itself runs `puppeteer browsers install chrome`.
 
 ## Architecture
 
