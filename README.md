@@ -109,7 +109,7 @@ npm test               # Jest unit tests (tests/*.test.js)
 npm run build:dev      # like build:all, plus 1-minute options for unlocks, cooldown and focus, for manual testing
 npm run zip:all        # build + releases/mindfull-<browser>.zip
 npm run icons          # regenerate icons/*.png
-npm run screenshots    # rebuild, then regenerate docs/screenshots/ and the store image in docs/store/
+npm run screenshots    # rebuild, then regenerate docs/screenshots/ and the store images in docs/store/
 ```
 
 ## How it works

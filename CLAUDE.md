@@ -20,7 +20,11 @@ npm run screenshots                        # build:chrome + regenerate docs/scre
 
 There is no lint step. Load `dist/chrome` via chrome://extensions → Load unpacked, or `dist/firefox/manifest.json` via about:debugging. User-facing behaviour is described in `README.md`.
 
-**README screenshots:** `scripts/screenshots.js` loads `dist/chrome` into headless Chrome for Testing. Before each capture it seeds `chrome.storage.local` through the service worker, then writes light and dark PNGs per screen to `docs/screenshots/`. It also writes the 1280×800 store listing image (Chrome Web Store and Firefox Add-ons), `docs/store/pause-1280x800.png`. It also stubs `Math.random` so the heading and sentence are fixed, and stubs `chrome.tabs.query` for the popup. Re-run it after visible UI changes. npm's `allowScripts` skips Puppeteer's postinstall, so the script itself runs `puppeteer browsers install chrome`.
+**Screenshots:** `scripts/screenshots.js` loads `dist/chrome` into headless Chrome for Testing. Before each capture it seeds `chrome.storage.local` through the service worker, then writes light and dark PNGs per screen to `docs/screenshots/` for the README. It also writes two 1280×800 store gallery images (Chrome Web Store and Firefox Add-ons) to `docs/store/`:
+- `hero-1280x800.png`, the lead image: the pause page in a generic browser window with the popup open, put together from frameless captures;
+- `pause-1280x800.png`, the pause page alone.
+
+To get the same image on every run, the script stubs `Math.random` so the heading and sentence are fixed, pins each page's `Date.now` to the seed time, hides the text cursor and waits two frames before capturing. It also stubs `chrome.tabs.query` for the popup. Re-run it after visible UI changes. npm's `allowScripts` skips Puppeteer's postinstall, so the script itself runs `puppeteer browsers install chrome`.
 
 ## Architecture
 
