@@ -1,6 +1,11 @@
-# Mindfull
+# <img src="icons/icon128.png" width="32" height="32" alt=""> Mindfull
 
 A browser extension for Chrome and Firefox that puts a short wait in front of the sites you open on autopilot.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/pause-dark.png">
+  <img src="docs/screenshots/pause-light.png" width="640" alt="The pause page for youtube.com: the heading &quot;This may be an impulse&quot;, a 20-second wait, today's opens and time, and Enter and Leave buttons">
+</picture>
 
 ## What it does
 
@@ -29,6 +34,48 @@ Pages left open, such as settings or a "closed until 4 am" page, refresh themsel
 - **Focus sessions:** 25, 50 or 90 minutes from the toolbar popup, with every listed site closed.
 - **Friction for loosening:** making things stricter applies right away. Loosening needs two steps: first you type a sentence (pasting is blocked), then the change waits out a cooldown (default 10 min) that you can cancel. Loosening means removing a site, raising a limit, shortening the wait, pausing or turning off Mindfull, or ending a focus session early. Removing a site uses a sentence that names it, e.g. "I want youtube.com to open without asking".
 
+<table>
+  <tr>
+    <td width="50%">
+      <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/closed-dark.png">
+        <img src="docs/screenshots/closed-light.png" width="100%" alt="The page for reddit.com once its daily opens are used up: &quot;That's all for today&quot;, when it opens again, and the code ERR_DAILY_LIMIT_REACHED">
+      </picture>
+    </td>
+    <td width="50%">
+      <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/confirm-dark.png">
+        <img src="docs/screenshots/confirm-light.png" width="100%" alt="The confirmation box for removing youtube.com: it explains the 10-minute cooldown and asks you to type &quot;I want youtube.com to open without asking&quot;">
+      </picture>
+    </td>
+  </tr>
+  <tr>
+    <td>Out of opens: closed until 4 am.</td>
+    <td>Loosening: type the sentence, then wait out the cooldown.</td>
+  </tr>
+</table>
+
+### Toolbar popup and settings
+
+The toolbar popup shows the site you're on with today's opens and time, starts focus sessions, and lists changes still waiting out their cooldown, each of which you can cancel. The settings page holds the site list with per-site daily opens, restricted hours, the wait and cooldown, and pausing or turning Mindfull off.
+
+<table>
+  <tr>
+    <td valign="top">
+      <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/popup-dark.png">
+        <img src="docs/screenshots/popup-light.png" width="260" alt="The toolbar popup: guarding 4 sites, youtube.com with 1 open and 12 min today, focus buttons for 25 min, 50 min and 1 h 30 min, and the removal of x.com waiting to apply with a Cancel link">
+      </picture>
+    </td>
+    <td valign="top">
+      <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/settings-dark.png">
+        <img src="docs/screenshots/settings-light.png" width="520" alt="The settings page: the change waiting to apply, and the site list with today's opens and time, a daily opens setting and a Remove button for each site">
+      </picture>
+    </td>
+  </tr>
+</table>
+
 ### Time spent
 
 Time counts while a listed site is the active tab in a focused browser window. It stops when you switch tabs or apps, and time while the browser is closed or asleep isn't counted.
@@ -37,7 +84,7 @@ Everything stays in this browser. Nothing is sent anywhere. Open counts and time
 
 ### Look
 
-The pause page looks like a browser's "can't open this site" page: a big grey icon, a heading, a line or two of grey text and a blue Leave button. Closed states add a small error code such as `ERR_DAILY_LIMIT_REACHED`. It follows your system's light or dark setting. There are no animations or decorations, because the page itself shouldn't be another distraction.
+The pause page is styled like a browser's "can't open this site" page, and every page follows your system's light or dark setting. There are no animations or decorations, because the page itself shouldn't be another distraction.
 
 ### Changing the wording
 
@@ -62,6 +109,7 @@ npm test               # Jest unit tests (tests/*.test.js)
 npm run build:dev      # like build:all, plus 1-minute options for unlocks, cooldown and focus, for manual testing
 npm run zip:all        # build + releases/mindfull-<browser>.zip
 npm run icons          # regenerate icons/*.png
+npm run screenshots    # rebuild, then regenerate docs/screenshots/*.png in headless Chrome
 ```
 
 ## How it works
