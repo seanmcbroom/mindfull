@@ -2,10 +2,7 @@
 
 A browser extension for Chrome and Firefox that puts a short wait in front of the sites you open on autopilot.
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/pause-dark.png">
-  <img src="docs/screenshots/pause-light.png" width="640" alt="The pause page for youtube.com: the heading &quot;This may be an impulse&quot;, a 20-second wait, today's opens and time, and Enter and Leave buttons">
-</picture>
+<img src="docs/store/hero-1280x800.png" width="640" alt="The pause page for youtube.com: the heading &quot;This may be an impulse&quot;, a 20-second wait, today's opens and time, and Enter and Leave buttons">
 
 ## What it does
 
