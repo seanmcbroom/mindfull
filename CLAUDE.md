@@ -91,6 +91,7 @@ There is no lint step. Load `dist/chrome` via chrome://extensions → Load unpac
 
   Light and dark follow the system through the tokens in `ui.css`, and the popup and options pages share them. The owner rejected both polished/glossy versions and a bare textboard look ("too boring"). Keep it plain, with no animation or decoration, and keep the pause page minimal: heading, wait, one line of today's opens and time, Leave/Enter.
 - **Copy:** plain sentence case. The pause-page action is "Enter", not "Stay".
+- **Name:** spelled **Mindfull** on purpose, a pun on "mind full". Don't correct it to "Mindful" in code, copy or docs.
 - **Adding a setting:** add it to `DEFAULT_SETTINGS`, to `SETTING_RULES` in `ops.js` (validity, whether a change loosens it, and its label), and to the options page.
 - **Phrase lists:** removal sentences use a `{site}` placeholder and are checked per op in the background.
 
